@@ -221,7 +221,10 @@ private
     code = response.code.to_i
 
     if (code == 200)
-      return response.body
+      body = response.body
+      encoding = response.type_params["charset"] || "UTF-8"
+      body.force_encoding(encoding)
+      return body
     else
       error_message = api_error_message(response)
       raise Phrase::Api::Exceptions::Unauthorized.new(error_message) if (code == 401)

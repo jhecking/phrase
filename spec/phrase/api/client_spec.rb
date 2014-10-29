@@ -207,6 +207,12 @@ describe Phrase::Api::Client do
           subject.download_translations_for_locale("en", "yml").should include "en:"
         end
       end
+
+      it "should return translations in UTF-8 encoding" do
+        VCR.use_cassette('download translations') do
+          subject.download_translations_for_locale("en", "yml").encoding.should eq Encoding::UTF_8
+        end
+      end
     end
   end
 
@@ -316,7 +322,7 @@ describe Phrase::Api::Client do
   end
 
   describe "#perform_api_request" do
-    let(:response) { stub(:body => "Some Body", :code => 200) }
+    let(:response) { stub(:body => "Some Body", :code => 200, :type_params => {}) }
     let(:http_client) { stub(:request => response) }
 
     before(:each) do
